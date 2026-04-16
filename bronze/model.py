@@ -1,84 +1,87 @@
-CREATE_SCHEMA = """
-CREATE SCHEMA IF NOT EXISTS bronze;
-"""
+from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
+from sqlalchemy import String, Integer
+from typing import Optional
 
-CREATE_RAW_DATA = """
-CREATE TABLE IF NOT EXISTS bronze.raw_data (
-    unnamed_0                           TEXT,
-    resultid                            TEXT,
-    raceid                              TEXT,
-    driverid                            TEXT,
-    constructorid                       TEXT,
-    number                              TEXT,
-    grid                                TEXT,
-    position                            TEXT,
-    positiontext                        TEXT,
-    positionorder                       TEXT,
-    points                              TEXT,
-    laps                                TEXT,
-    time                                TEXT,
-    milliseconds                        TEXT,
-    fastestlap                          TEXT,
-    rank                                TEXT,
-    fastestlaptime                      TEXT,
-    fastestlapspeed                     TEXT,
-    statusid                            TEXT,
-    year                                TEXT,
-    round                               TEXT,
-    circuitid                           TEXT,
-    name_x                              TEXT,
-    date                                TEXT,
-    time_races                          TEXT,
-    url_x                               TEXT,
-    fp1_date                            TEXT,
-    fp1_time                            TEXT,
-    fp2_date                            TEXT,
-    fp2_time                            TEXT,
-    fp3_date                            TEXT,
-    fp3_time                            TEXT,
-    quali_date                          TEXT,
-    quali_time                          TEXT,
-    sprint_date                         TEXT,
-    sprint_time                         TEXT,
-    circuitref                          TEXT,
-    name_y                              TEXT,
-    location                            TEXT,
-    country                             TEXT,
-    lat                                 TEXT,
-    lng                                 TEXT,
-    alt                                 TEXT,
-    url_y                               TEXT,
-    driverref                           TEXT,
-    number_drivers                      TEXT,
-    code                                TEXT,
-    forename                            TEXT,
-    surname                             TEXT,
-    dob                                 TEXT,
-    nationality                         TEXT,
-    url                                 TEXT,
-    constructorref                      TEXT,
-    name                                TEXT,
-    nationality_constructors            TEXT,
-    url_constructors                    TEXT,
-    lap                                 TEXT,
-    position_laptimes                   TEXT,
-    time_laptimes                       TEXT,
-    milliseconds_laptimes               TEXT,
-    stop                                TEXT,
-    lap_pitstops                        TEXT,
-    time_pitstops                       TEXT,
-    duration                            TEXT,
-    milliseconds_pitstops               TEXT,
-    driverstandingsid                   TEXT,
-    points_driverstandings              TEXT,
-    position_driverstandings            TEXT,
-    positiontext_driverstandings        TEXT,
-    wins                                TEXT,
-    constructorstandingsid              TEXT,
-    points_constructorstandings         TEXT,
-    position_constructorstandings       TEXT,
-    positiontext_constructorstandings   TEXT,
-    wins_constructorstandings           TEXT,
-    status                              TEXT
-);
-"""
+class Base(DeclarativeBase):
+    pass
+
+class BronzeRawData(Base):
+    __tablename__ = 'raw_data'
+    __table_args__ = {'schema': 'bronze'}
+
+    unnamed_0: Mapped[int] = mapped_column(Integer, primary_key=True)
+    resultid: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    raceid: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    driverid: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    constructorid: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    number: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    grid: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    position: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    positiontext: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    positionorder: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    points: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    laps: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    time: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    milliseconds: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    fastestlap: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    rank: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    fastestlaptime: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    fastestlapspeed: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    statusid: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    year: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    round: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    circuitid: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    name_x: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    date: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    time_races: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    url_x: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    fp1_date: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    fp1_time: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    fp2_date: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    fp2_time: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    fp3_date: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    fp3_time: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    quali_date: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    quali_time: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    sprint_date: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    sprint_time: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    circuitref: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    name_y: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    location: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    country: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    lat: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    lng: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    alt: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    url_y: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    driverref: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    number_drivers: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    code: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    forename: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    surname: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    dob: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    nationality: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    url: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    constructorref: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    nationality_constructors: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    url_constructors: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    lap: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    position_laptimes: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    time_laptimes: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    milliseconds_laptimes: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    stop: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    lap_pitstops: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    time_pitstops: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    duration: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    milliseconds_pitstops: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    driverstandingsid: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    points_driverstandings: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    position_driverstandings: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    positiontext_driverstandings: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    wins: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    constructorstandingsid: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    points_constructorstandings: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    position_constructorstandings: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    positiontext_constructorstandings: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    wins_constructorstandings: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    status: Mapped[Optional[str]] = mapped_column(String, nullable=True)

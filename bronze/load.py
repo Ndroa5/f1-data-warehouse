@@ -7,6 +7,9 @@ def load_csv_to_bronze(engine):
     df = df.rename(columns={'Unnamed: 0': 'unnamed_0'})
     df.columns = [c.lower() for c in df.columns]
     
+    # unnamed_0 kao integer
+    df['unnamed_0'] = df['unnamed_0'].astype(int)
+    
     print(f"Ubacujem {len(df)} redova u bronze.raw_data...")
     df.to_sql('raw_data', engine, schema='bronze', if_exists='replace', index=False)
     print("✅ Gotovo!")
