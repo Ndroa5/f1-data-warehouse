@@ -3,8 +3,9 @@ from sqlalchemy import text
 def load_to_silver(engine):
     print("Kreiram silver.raw_data tabelu...")
     with engine.begin() as conn:
+        conn.execute(text("DROP TABLE IF EXISTS silver.raw_data;"))
         conn.execute(text("""
-            CREATE TABLE IF NOT EXISTS silver.raw_data AS
+            CREATE TABLE silver.raw_data AS
             SELECT
                 b.resultid::INTEGER,
                 b.raceid::INTEGER,
