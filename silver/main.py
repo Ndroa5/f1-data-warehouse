@@ -4,7 +4,16 @@ from load import load_to_silver
 
 engine = create_engine('postgresql://postgres:postgres123@localhost:5432/f1_warehouse')
 
-if __name__ == "__main__":
+def create_tables():
     Base.metadata.create_all(engine)
     print("✅ Silver tabele kreirane!")
+
+def load():
     load_to_silver(engine)
+
+def run():
+    create_tables()
+    load()
+
+if __name__ == "__main__":
+    run()

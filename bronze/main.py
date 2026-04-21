@@ -8,9 +8,12 @@ def create_tables():
     Base.metadata.create_all(engine)
     print("✅ Bronze tabele kreirane!")
 
-
+def load():
     load_csv_to_bronze(engine)
 
-if __name__ == "__main__":
+def run():
     create_tables()
     load()
+
+if __name__ == "__main__":
+    run()
