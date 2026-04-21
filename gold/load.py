@@ -3,10 +3,6 @@ from sqlalchemy import text
 def load_to_gold(engine):
     with engine.begin() as conn:
 
-        # ============================================================
-        # DIM TABELE PRVE — zbog FK constraintova
-        # ============================================================
-
         print("Ubacujem gold.dim_driver...")
         conn.execute(text("""
             INSERT INTO gold.dim_driver
@@ -42,7 +38,7 @@ def load_to_gold(engine):
             SELECT DISTINCT ON (s.circuitid)
                 s.circuitid,
                 s.circuitref,
-                s.name_y,
+                s.name_y AS circuit_name,
                 s.location,
                 s.country,
                 s.lat,
@@ -62,32 +58,6 @@ def load_to_gold(engine):
             FROM silver.raw_data s
             WHERE s.statusid IS NOT NULL
             ORDER BY s.statusid;
-        """))
-
-        print("Ubacujem gold.dim_race...")
-        conn.execute(text("""
-            INSERT INTO gold.dim_race
-            SELECT DISTINCT ON (s.raceid)
-                s.raceid,
-                s.circuitid,
-                s.year,
-                s.round,
-                s.name_x,
-                s.date,
-                s.time_races,
-                s.fp1_date,
-                s.fp1_time,
-                s.fp2_date,
-                s.fp2_time,
-                s.fp3_date,
-                s.fp3_time,
-                s.quali_date,
-                s.quali_time,
-                s.sprint_date,
-                s.sprint_time
-            FROM silver.raw_data s
-            WHERE s.raceid IS NOT NULL
-            ORDER BY s.raceid;
         """))
 
         print("Ubacujem gold.dim_date...")
@@ -110,9 +80,39 @@ def load_to_gold(engine):
             ORDER BY full_date;
         """))
 
-        # ============================================================
-        # FACT TABELE
-        # ============================================================
+        print("Ubacujem gold.dim_race...")
+        conn.execute(text("""
+            INSERT INTO gold.dim_race
+            SELECT DISTINCT ON (s.raceid)
+                s.raceid,
+                s.circuitid,
+                s.year,
+                s.round,
+                s.name_x AS race_name,
+                s.date,
+                s.time_races,
+                s.fp1_date,
+                s.fp1_time,
+                s.fp2_date,
+                s.fp2_time,
+                s.fp3_date,
+                s.fp3_time,
+                s.quali_date,
+                s.quali_time,
+                s.sprint_date,
+                s.sprint_time,
+                NULL AS dateid
+            FROM silver.raw_data s
+            WHERE s.raceid IS NOT NULL
+            ORDER BY s.raceid;
+        """))
+
+        conn.execute(text("""
+            UPDATE gold.dim_race r
+            SET dateid = d.dateid
+            FROM gold.dim_date d
+            WHERE r.date = d.full_date;
+        """))
 
         print("Ubacujem gold.fact_results...")
         conn.execute(text("""
@@ -196,4 +196,4 @@ def load_to_gold(engine):
             ORDER BY s.constructorstandingsid;
         """))
 
-    print("✅ Silver → Gold završeno!")
+    print("Silver → Gold završeno!")

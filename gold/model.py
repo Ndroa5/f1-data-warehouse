@@ -36,7 +36,7 @@ class DimCircuit(Base):
 
     circuitid: Mapped[int] = mapped_column(Integer, primary_key=True)
     circuitref: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    name_y: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+    circuit_name: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
     location: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     country: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     lat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
@@ -58,7 +58,7 @@ class DimRace(Base):
     circuitid: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey('gold.dim_circuit.circuitid'), nullable=True)
     year: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     round: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    name_x: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+    race_name: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
     date: Mapped[Optional[Date]] = mapped_column(Date, nullable=True)
     time_races: Mapped[Optional[Time]] = mapped_column(Time, nullable=True)
     fp1_date: Mapped[Optional[Date]] = mapped_column(Date, nullable=True)
@@ -71,6 +71,7 @@ class DimRace(Base):
     quali_time: Mapped[Optional[Time]] = mapped_column(Time, nullable=True)
     sprint_date: Mapped[Optional[Date]] = mapped_column(Date, nullable=True)
     sprint_time: Mapped[Optional[Time]] = mapped_column(Time, nullable=True)
+    dateid: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey('gold.dim_date.dateid'), nullable=True)
 
 class DimDate(Base):
     __tablename__ = 'dim_date'
