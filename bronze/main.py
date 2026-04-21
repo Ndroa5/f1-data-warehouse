@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from model import Base, BronzeRawData
 from load import load_csv_to_bronze
 
-engine = create_engine('postgresql://postgres:postgres123@localhost:5432/f1_warehouse')
+engine = create_engine('postgresql://postgres:postgres123@host.docker.internal:5432/f1_warehouse')
 
 def create_tables():
     Base.metadata.create_all(engine)
