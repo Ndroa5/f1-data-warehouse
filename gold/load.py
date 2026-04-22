@@ -1,8 +1,7 @@
 from sqlalchemy import text
 
-def load_to_gold(engine):
+def truncate_all(engine):
     with engine.begin() as conn:
-
         print("Brišem stare gold podatke...")
         conn.execute(text("""
             TRUNCATE TABLE 
@@ -20,6 +19,8 @@ def load_to_gold(engine):
             CASCADE;
         """))
 
+def load_dim_driver(engine):
+    with engine.begin() as conn:
         print("Ubacujem gold.dim_driver...")
         conn.execute(text("""
             INSERT INTO gold.dim_driver
@@ -30,6 +31,8 @@ def load_to_gold(engine):
             ORDER BY s.driverid;
         """))
 
+def load_dim_constructor(engine):
+    with engine.begin() as conn:
         print("Ubacujem gold.dim_constructor...")
         conn.execute(text("""
             INSERT INTO gold.dim_constructor
@@ -40,6 +43,8 @@ def load_to_gold(engine):
             ORDER BY s.constructorid;
         """))
 
+def load_dim_circuit(engine):
+    with engine.begin() as conn:
         print("Ubacujem gold.dim_circuit...")
         conn.execute(text("""
             INSERT INTO gold.dim_circuit
@@ -51,6 +56,8 @@ def load_to_gold(engine):
             ORDER BY s.circuitid;
         """))
 
+def load_dim_status(engine):
+    with engine.begin() as conn:
         print("Ubacujem gold.dim_status...")
         conn.execute(text("""
             INSERT INTO gold.dim_status
@@ -61,6 +68,8 @@ def load_to_gold(engine):
             ORDER BY s.statusid;
         """))
 
+def load_dim_date(engine):
+    with engine.begin() as conn:
         print("Ubacujem gold.dim_date...")
         conn.execute(text("""
             INSERT INTO gold.dim_date
@@ -81,6 +90,8 @@ def load_to_gold(engine):
             ORDER BY full_date;
         """))
 
+def load_dim_race(engine):
+    with engine.begin() as conn:
         print("Ubacujem gold.dim_race...")
         conn.execute(text("""
             INSERT INTO gold.dim_race
@@ -93,7 +104,6 @@ def load_to_gold(engine):
             WHERE s.raceid IS NOT NULL
             ORDER BY s.raceid;
         """))
-
         conn.execute(text("""
             UPDATE gold.dim_race r
             SET dateid = d.dateid
@@ -101,6 +111,8 @@ def load_to_gold(engine):
             WHERE r.date = d.full_date;
         """))
 
+def load_fact_results(engine):
+    with engine.begin() as conn:
         print("Ubacujem gold.fact_results...")
         conn.execute(text("""
             INSERT INTO gold.fact_results
@@ -113,6 +125,8 @@ def load_to_gold(engine):
             ORDER BY s.resultid;
         """))
 
+def load_fact_lap_times(engine):
+    with engine.begin() as conn:
         print("Ubacujem gold.fact_lap_times...")
         conn.execute(text("""
             INSERT INTO gold.fact_lap_times
@@ -124,6 +138,8 @@ def load_to_gold(engine):
             ORDER BY s.raceid, s.driverid, s.lap;
         """))
 
+def load_fact_pit_stops(engine):
+    with engine.begin() as conn:
         print("Ubacujem gold.fact_pit_stops...")
         conn.execute(text("""
             INSERT INTO gold.fact_pit_stops
@@ -135,6 +151,8 @@ def load_to_gold(engine):
             ORDER BY s.raceid, s.driverid, s.stop;
         """))
 
+def load_fact_driver_standings(engine):
+    with engine.begin() as conn:
         print("Ubacujem gold.fact_driver_standings...")
         conn.execute(text("""
             INSERT INTO gold.fact_driver_standings
@@ -146,6 +164,8 @@ def load_to_gold(engine):
             ORDER BY s.driverstandingsid;
         """))
 
+def load_fact_constructor_standings(engine):
+    with engine.begin() as conn:
         print("Ubacujem gold.fact_constructor_standings...")
         conn.execute(text("""
             INSERT INTO gold.fact_constructor_standings
@@ -157,5 +177,3 @@ def load_to_gold(engine):
             WHERE s.constructorstandingsid IS NOT NULL
             ORDER BY s.constructorstandingsid;
         """))
-
-    print("Silver → Gold završeno!")
