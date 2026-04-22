@@ -8,12 +8,9 @@ def create_tables():
     Base.metadata.create_all(engine)
     print("✅ Gold tabele kreirane!")
 
-def load():
-    load_to_gold(engine)
-
 def run():
     create_tables()
-    load()
+    load_to_gold(engine)
 
 if __name__ == "__main__":
     run()
