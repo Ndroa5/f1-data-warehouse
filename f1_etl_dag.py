@@ -3,6 +3,15 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime
 import subprocess
 import sys
+import os
+from dotenv import load_dotenv
+
+load_dotenv('/opt/airflow/project/.env')
+
+DB_URL = (
+    f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}"
+    f"@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+)
 
 def run_bronze():
     subprocess.run([
@@ -20,77 +29,77 @@ def run_dim_driver():
     sys.path.insert(0, '/opt/airflow/project/gold')
     from sqlalchemy import create_engine
     from load import load_dim_driver
-    engine = create_engine('postgresql://postgres:postgres123@172.21.0.1:5432/f1_warehouse')
+    engine = create_engine(DB_URL)
     load_dim_driver(engine)
 
 def run_dim_constructor():
     sys.path.insert(0, '/opt/airflow/project/gold')
     from sqlalchemy import create_engine
     from load import load_dim_constructor
-    engine = create_engine('postgresql://postgres:postgres123@172.21.0.1:5432/f1_warehouse')
+    engine = create_engine(DB_URL)
     load_dim_constructor(engine)
 
 def run_dim_circuit():
     sys.path.insert(0, '/opt/airflow/project/gold')
     from sqlalchemy import create_engine
     from load import load_dim_circuit
-    engine = create_engine('postgresql://postgres:postgres123@172.21.0.1:5432/f1_warehouse')
+    engine = create_engine(DB_URL)
     load_dim_circuit(engine)
 
 def run_dim_status():
     sys.path.insert(0, '/opt/airflow/project/gold')
     from sqlalchemy import create_engine
     from load import load_dim_status
-    engine = create_engine('postgresql://postgres:postgres123@172.21.0.1:5432/f1_warehouse')
+    engine = create_engine(DB_URL)
     load_dim_status(engine)
 
 def run_dim_date():
     sys.path.insert(0, '/opt/airflow/project/gold')
     from sqlalchemy import create_engine
     from load import load_dim_date
-    engine = create_engine('postgresql://postgres:postgres123@172.21.0.1:5432/f1_warehouse')
+    engine = create_engine(DB_URL)
     load_dim_date(engine)
 
 def run_dim_race():
     sys.path.insert(0, '/opt/airflow/project/gold')
     from sqlalchemy import create_engine
     from load import load_dim_race
-    engine = create_engine('postgresql://postgres:postgres123@172.21.0.1:5432/f1_warehouse')
+    engine = create_engine(DB_URL)
     load_dim_race(engine)
 
 def run_fact_results():
     sys.path.insert(0, '/opt/airflow/project/gold')
     from sqlalchemy import create_engine
     from load import load_fact_results
-    engine = create_engine('postgresql://postgres:postgres123@172.21.0.1:5432/f1_warehouse')
+    engine = create_engine(DB_URL)
     load_fact_results(engine)
 
 def run_fact_lap_times():
     sys.path.insert(0, '/opt/airflow/project/gold')
     from sqlalchemy import create_engine
     from load import load_fact_lap_times
-    engine = create_engine('postgresql://postgres:postgres123@172.21.0.1:5432/f1_warehouse')
+    engine = create_engine(DB_URL)
     load_fact_lap_times(engine)
 
 def run_fact_pit_stops():
     sys.path.insert(0, '/opt/airflow/project/gold')
     from sqlalchemy import create_engine
     from load import load_fact_pit_stops
-    engine = create_engine('postgresql://postgres:postgres123@172.21.0.1:5432/f1_warehouse')
+    engine = create_engine(DB_URL)
     load_fact_pit_stops(engine)
 
 def run_fact_driver_standings():
     sys.path.insert(0, '/opt/airflow/project/gold')
     from sqlalchemy import create_engine
     from load import load_fact_driver_standings
-    engine = create_engine('postgresql://postgres:postgres123@172.21.0.1:5432/f1_warehouse')
+    engine = create_engine(DB_URL)
     load_fact_driver_standings(engine)
 
 def run_fact_constructor_standings():
     sys.path.insert(0, '/opt/airflow/project/gold')
     from sqlalchemy import create_engine
     from load import load_fact_constructor_standings
-    engine = create_engine('postgresql://postgres:postgres123@172.21.0.1:5432/f1_warehouse')
+    engine = create_engine(DB_URL)
     load_fact_constructor_standings(engine)
 
 with DAG(
@@ -116,14 +125,10 @@ with DAG(
     fact_driver_standings_task = PythonOperator(task_id="fact_driver_standings", python_callable=run_fact_driver_standings)
     fact_constructor_standings_task = PythonOperator(task_id="fact_constructor_standings", python_callable=run_fact_constructor_standings)
 
-    # Lanac
     bronze_task >> silver_task
 
-    # Paralelne DIM tabele
     silver_task >> [dim_driver_task, dim_constructor_task, dim_circuit_task, dim_status_task, dim_date_task]
 
-    # dim_race čeka sve DIM tabele
     [dim_driver_task, dim_constructor_task, dim_circuit_task, dim_status_task, dim_date_task] >> dim_race_task
 
-    # Paralelne FACT tabele
     dim_race_task >> [fact_results_task, fact_lap_times_task, fact_pit_stops_task, fact_driver_standings_task, fact_constructor_standings_task]
