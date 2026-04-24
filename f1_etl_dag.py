@@ -25,6 +25,13 @@ def run_silver():
         "/opt/airflow/project/silver/main.py"
     ], check=True)
 
+def run_silver_dq_checks_task():
+    sys.path.insert(0, '/opt/airflow/project/silver')
+    from sqlalchemy import create_engine
+    from dq_checks import run_silver_dq_checks
+    engine = create_engine(DB_URL)
+    run_silver_dq_checks(engine)
+
 def run_dim_driver():
     sys.path.insert(0, '/opt/airflow/project/gold')
     from sqlalchemy import create_engine
@@ -118,6 +125,7 @@ with DAG(
 
     bronze_task = PythonOperator(task_id="load_bronze", python_callable=run_bronze)
     silver_task = PythonOperator(task_id="load_silver", python_callable=run_silver)
+    silver_dq_task = PythonOperator(task_id="silver_dq_checks", python_callable=run_silver_dq_checks_task)
 
     dim_driver_task = PythonOperator(task_id="dim_driver", python_callable=run_dim_driver)
     dim_constructor_task = PythonOperator(task_id="dim_constructor", python_callable=run_dim_constructor)
@@ -135,10 +143,10 @@ with DAG(
     dq_checks_task = PythonOperator(task_id="dq_checks", python_callable=run_dq_checks_task)
 
     # Lanac
-    bronze_task >> silver_task
+    bronze_task >> silver_task >> silver_dq_task
 
-    # Paralelne DIM tabele
-    silver_task >> [dim_driver_task, dim_constructor_task, dim_circuit_task, dim_status_task, dim_date_task]
+    # Paralelne DIM tabele čekaju silver DQ
+    silver_dq_task >> [dim_driver_task, dim_constructor_task, dim_circuit_task, dim_status_task, dim_date_task]
 
     # dim_race čeka sve DIM tabele
     [dim_driver_task, dim_constructor_task, dim_circuit_task, dim_status_task, dim_date_task] >> dim_race_task
@@ -146,5 +154,5 @@ with DAG(
     # Paralelne FACT tabele
     dim_race_task >> [fact_results_task, fact_lap_times_task, fact_pit_stops_task, fact_driver_standings_task, fact_constructor_standings_task]
 
-    # DQ checks čekaju sve FACT tabele
+    # Gold DQ checks čekaju sve FACT tabele
     [fact_results_task, fact_lap_times_task, fact_pit_stops_task, fact_driver_standings_task, fact_constructor_standings_task] >> dq_checks_task
