@@ -102,6 +102,13 @@ def run_fact_constructor_standings():
     engine = create_engine(DB_URL)
     load_fact_constructor_standings(engine)
 
+def run_dq_checks_task():
+    sys.path.insert(0, '/opt/airflow/project/gold')
+    from sqlalchemy import create_engine
+    from dq_checks import run_dq_checks
+    engine = create_engine(DB_URL)
+    run_dq_checks(engine)
+
 with DAG(
     dag_id="f1_etl_pipeline",
     start_date=datetime(2024, 1, 1),
@@ -125,10 +132,19 @@ with DAG(
     fact_driver_standings_task = PythonOperator(task_id="fact_driver_standings", python_callable=run_fact_driver_standings)
     fact_constructor_standings_task = PythonOperator(task_id="fact_constructor_standings", python_callable=run_fact_constructor_standings)
 
+    dq_checks_task = PythonOperator(task_id="dq_checks", python_callable=run_dq_checks_task)
+
+    # Lanac
     bronze_task >> silver_task
 
+    # Paralelne DIM tabele
     silver_task >> [dim_driver_task, dim_constructor_task, dim_circuit_task, dim_status_task, dim_date_task]
 
+    # dim_race čeka sve DIM tabele
     [dim_driver_task, dim_constructor_task, dim_circuit_task, dim_status_task, dim_date_task] >> dim_race_task
 
+    # Paralelne FACT tabele
     dim_race_task >> [fact_results_task, fact_lap_times_task, fact_pit_stops_task, fact_driver_standings_task, fact_constructor_standings_task]
+
+    # DQ checks čekaju sve FACT tabele
+    [fact_results_task, fact_lap_times_task, fact_pit_stops_task, fact_driver_standings_task, fact_constructor_standings_task] >> dq_checks_task
