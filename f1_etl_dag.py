@@ -160,9 +160,8 @@ with DAG(
     fact_constructor_standings_task = PythonOperator(task_id="fact_constructor_standings", python_callable=run_fact_constructor_standings)
 
     dq_checks_task = PythonOperator(task_id="dq_checks", python_callable=run_dq_checks_task)
-kafka_producer_task = PythonOperator(task_id="kafka_producer", python_callable=run_kafka_producer)
-kafka_consumer_task = PythonOperator(task_id="kafka_consumer", python_callable=run_kafka_consumer)
-
+    kafka_producer_task = PythonOperator(task_id="kafka_producer", python_callable=run_kafka_producer)
+    kafka_consumer_task = PythonOperator(task_id="kafka_consumer", python_callable=run_kafka_consumer)
 
     # Lanac
     bronze_task >> silver_task >> silver_dq_task
