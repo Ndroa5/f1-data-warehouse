@@ -72,7 +72,7 @@ def consume_messages(engine):
         enable_auto_commit=True,
         group_id='f1-consumer-group',
         value_deserializer=lambda v: json.loads(v.decode('utf-8')),
-        consumer_timeout_ms=10000
+        consumer_timeout_ms=60000
     )
 
     counts = {'f1.lap_times': 0, 'f1.pit_stops': 0, 'f1.results': 0}
