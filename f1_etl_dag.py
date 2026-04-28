@@ -118,13 +118,9 @@ def run_dq_checks_task():
 
 def run_kafka_producer():
     sys.path.insert(0, '/opt/airflow/project/kafka')
-    from sqlalchemy import create_engine
-    from producer import get_producer, stream_lap_times, stream_pit_stops, stream_results
-    engine = create_engine(DB_URL)
+    from producer import get_producer, stream_car_telemetry
     producer = get_producer()
-    stream_lap_times(producer, engine)
-    stream_pit_stops(producer, engine)
-    stream_results(producer, engine)
+    stream_car_telemetry(producer)
     producer.flush()
 
 def run_kafka_consumer():
