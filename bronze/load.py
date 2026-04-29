@@ -12,7 +12,7 @@ def load_csv_to_bronze(engine):
         df['unnamed_0'] = df['unnamed_0'].astype(int)
         logger.info(f"Ubacujem {len(df)} redova u bronze.raw_data...")
         df.to_sql('raw_data', engine, schema='bronze', if_exists='replace', index=False)
-        logger.info("✅ Bronze load završen!")
+        logger.info("Bronze load završen!")
     except Exception as e:
         logger.error(f"Greška pri učitavanju bronze: {e}")
         raise

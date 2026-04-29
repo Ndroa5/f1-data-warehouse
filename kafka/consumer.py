@@ -34,7 +34,7 @@ def create_kafka_tables(engine):
                 PRIMARY KEY (session_key, driver_number, date)
             );
         """))
-    logger.info("✅ gold.car_telemetry tabela kreirana!")
+    logger.info("gold.car_telemetry tabela kreirana!")
 
 def consume_messages(engine):
     consumer = KafkaConsumer(
@@ -67,7 +67,7 @@ def consume_messages(engine):
             """), data)
             count += 1
 
-    logger.info(f"✅ Consumer završen! Primljeno: {count} telemetrijskih zapisa")
+    logger.info(f"Consumer završen! Primljeno: {count} telemetrijskih zapisa")
 
 if __name__ == "__main__":
     engine = create_engine(DB_URL)
