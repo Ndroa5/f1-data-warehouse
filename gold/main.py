@@ -17,7 +17,7 @@ engine = create_engine(
 
 def create_tables():
     Base.metadata.create_all(engine)
-    logger.info("✅ Gold tabele kreirane!")
+    logger.info("Gold tabele kreirane!")
 
 def run():
     create_tables()

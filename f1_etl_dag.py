@@ -116,6 +116,21 @@ def run_dq_checks_task():
     engine = create_engine(DB_URL)
     run_dq_checks(engine)
 
+def run_kafka_producer():
+    sys.path.insert(0, '/opt/airflow/project/kafka')
+    from producer import get_producer, stream_car_telemetry
+    producer = get_producer()
+    stream_car_telemetry(producer)
+    producer.flush()
+
+def run_kafka_consumer():
+    sys.path.insert(0, '/opt/airflow/project/kafka')
+    from sqlalchemy import create_engine
+    from consumer import create_kafka_tables, consume_messages
+    engine = create_engine(DB_URL)
+    create_kafka_tables(engine)
+    consume_messages(engine)
+
 with DAG(
     dag_id="f1_etl_pipeline",
     start_date=datetime(2024, 1, 1),
@@ -141,6 +156,8 @@ with DAG(
     fact_constructor_standings_task = PythonOperator(task_id="fact_constructor_standings", python_callable=run_fact_constructor_standings)
 
     dq_checks_task = PythonOperator(task_id="dq_checks", python_callable=run_dq_checks_task)
+    kafka_producer_task = PythonOperator(task_id="kafka_producer", python_callable=run_kafka_producer)
+    kafka_consumer_task = PythonOperator(task_id="kafka_consumer", python_callable=run_kafka_consumer)
 
     # Lanac
     bronze_task >> silver_task >> silver_dq_task
@@ -155,4 +172,4 @@ with DAG(
     dim_race_task >> [fact_results_task, fact_lap_times_task, fact_pit_stops_task, fact_driver_standings_task, fact_constructor_standings_task]
 
     # Gold DQ checks čekaju sve FACT tabele
-    [fact_results_task, fact_lap_times_task, fact_pit_stops_task, fact_driver_standings_task, fact_constructor_standings_task] >> dq_checks_task
+    [fact_results_task, fact_lap_times_task, fact_pit_stops_task, fact_driver_standings_task, fact_constructor_standings_task] >> dq_checks_task >> kafka_producer_task >> kafka_consumer_task

@@ -17,7 +17,7 @@ engine = create_engine(
 
 def create_tables():
     Base.metadata.create_all(engine)
-    logger.info("✅ Silver tabele kreirane!")
+    logger.info("Silver tabele kreirane!")
 
 def run():
     create_tables()
