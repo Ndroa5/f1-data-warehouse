@@ -17,7 +17,7 @@ def run_silver_dq_checks(engine):
         if result != 518417:
             errors.append(f"ROW COUNT — silver.raw_data: očekivano 518417, pronađeno {result}")
         else:
-            logger.info(f"✅ ROW COUNT silver.raw_data: {result}")
+            logger.info(f"ROW COUNT silver.raw_data: {result}")
 
         # ============================================================
         # 2. NULL ARTIFACT CHECKS
@@ -38,7 +38,7 @@ def run_silver_dq_checks(engine):
             if result > 0:
                 errors.append(f"NULL ARTIFACT — silver.raw_data.{col}: pronađeno {result} '\\N' artefakata!")
             else:
-                logger.info(f"✅ NULL ARTIFACT silver.raw_data.{col}: nema artefakata")
+                logger.info(f"NULL ARTIFACT silver.raw_data.{col}: nema artefakata")
 
         # ============================================================
         # 3. NULL CHECKS — ključne kolone
@@ -57,7 +57,7 @@ def run_silver_dq_checks(engine):
             if result > 0:
                 errors.append(f"NULL CHECK — silver.raw_data.{col}: pronađeno {result} NULL vrijednosti!")
             else:
-                logger.info(f"✅ NULL CHECK silver.raw_data.{col}: nema NULL-ova")
+                logger.info(f"NULL CHECK silver.raw_data.{col}: nema NULL-ova")
 
         # ============================================================
         # 4. NEGATIVE VALUE CHECKS
@@ -78,7 +78,7 @@ def run_silver_dq_checks(engine):
             if result > 0:
                 errors.append(f"NEGATIVE — silver.raw_data.{col}: pronađeno {result} negativnih vrijednosti!")
             else:
-                logger.info(f"✅ NEGATIVE silver.raw_data.{col}: nema negativnih vrijednosti")
+                logger.info(f"NEGATIVE silver.raw_data.{col}: nema negativnih vrijednosti")
 
         # ============================================================
         # 5. RANGE CHECKS
@@ -92,7 +92,7 @@ def run_silver_dq_checks(engine):
         if result > 0:
             errors.append(f"RANGE — silver.raw_data.position: {result} vrijednosti van opsega 1-25!")
         else:
-            logger.info("✅ RANGE silver.raw_data.position: sve vrijednosti u opsegu 1-25")
+            logger.info("RANGE silver.raw_data.position: sve vrijednosti u opsegu 1-25")
 
         result = conn.execute(text("""
             SELECT COUNT(*) FROM silver.raw_data
@@ -101,7 +101,7 @@ def run_silver_dq_checks(engine):
         if result > 0:
             errors.append(f"RANGE — silver.raw_data.year: {result} vrijednosti van opsega 2012-2023!")
         else:
-            logger.info("✅ RANGE silver.raw_data.year: sve godine u opsegu 2012-2023")
+            logger.info("RANGE silver.raw_data.year: sve godine u opsegu 2012-2023")
 
         result = conn.execute(text("""
             SELECT COUNT(*) FROM silver.raw_data
@@ -110,7 +110,7 @@ def run_silver_dq_checks(engine):
         if result > 0:
             errors.append(f"RANGE — silver.raw_data.round: {result} vrijednosti van opsega 1-25!")
         else:
-            logger.info("✅ RANGE silver.raw_data.round: sve runde u opsegu 1-25")
+            logger.info("RANGE silver.raw_data.round: sve runde u opsegu 1-25")
 
         # ============================================================
         # 6. DUPLICATE CHECKS
@@ -129,7 +129,7 @@ def run_silver_dq_checks(engine):
         if result > 0:
             errors.append(f"DUPLICATE — silver.raw_data: pronađeno {result} duplikata!")
         else:
-            logger.info("✅ DUPLICATE silver.raw_data: nema duplikata")
+            logger.info("DUPLICATE silver.raw_data: nema duplikata")
 
     # ============================================================
     # FINALNI REZULTAT
@@ -140,4 +140,4 @@ def run_silver_dq_checks(engine):
             logger.error(f"  - {error}")
         raise ValueError(f"Silver Data Quality checks failed sa {len(errors)} problema!")
     else:
-        logger.info("✅ SVI SILVER DATA QUALITY CHECKS PROŠLI!")
+        logger.info("SVI SILVER DATA QUALITY CHECKS PROŠLI!")
